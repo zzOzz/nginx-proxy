@@ -88,11 +88,15 @@ upstream {{ $host }} {
 {{ end }}
 }
 
+
 {{ $default_host := or ($.Env.DEFAULT_HOST) "" }}
 {{ $default_server := index (dict $host "" $default_host "default_server") $host }}
 
 {{/* Get the VIRTUAL_PROTO defined by containers w/ the same vhost, falling back to "http" */}}
 {{ $proto := or (first (groupByKeys $containers "Env.VIRTUAL_PROTO")) "http" }}
+{{ $other_nginx_parameters := or (first (groupByKeys $containers "Env.OTHER_NGINX_PARAMETERS")) "#nothing" }}
+
+
 
 {{/* Get the first cert name defined by containers w/ the same vhost */}}
 {{ $certName := (first (groupByKeys $containers "Env.CERT_NAME")) }}
@@ -117,6 +121,7 @@ server {
 }
 
 server {
+	{{ $other_nginx_parameters }}
 	server_name {{ $host }};
 	listen 443 ssl http2 {{ $default_server }};
 	access_log /var/log/nginx/access.log vhost;

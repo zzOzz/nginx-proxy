@@ -10,5 +10,5 @@ update-dependencies:
 	docker pull docker:1.7
 
 test:
-	docker build -t jwilder/nginx-proxy:bats .
+	docker build -t zzOzz/nginx-proxy:bats .
 	bats test
